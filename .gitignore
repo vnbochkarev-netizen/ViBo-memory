@@ -1,0 +1,14 @@
+# Secrets
+.env
+*.pem
+*.db
+vibo_license.dat
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Memory files
+*.web
