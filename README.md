@@ -101,6 +101,37 @@ Typical savings: **50-150× fewer tokens** (up to 2,000× on large memories). Me
 
 ---
 
+## 🌐 Product 2: Web Search Savings
+
+Web search results are huge (5-15K tokens per article). Dumping them all
+into the LLM context is expensive. ViBo compresses them first.
+
+**Measured: 96.2% fewer tokens** (12,975 → 489 per article).
+
+```python
+from vibo_web import compress_article, WebCache
+
+# Compress search results before the LLM sees them
+for article in search_results:
+    compressed, stats = compress_article(article["text"], query)
+    article["text"] = compressed          # only the essence
+    print(f"saved {stats['saved_pct']}%")
+
+# Cache — repeated questions cost 0 tokens
+cache = WebCache("web_cache.json")
+if not cache.get(query):
+    results = search(query)
+    cache.put(query, results)
+```
+
+| Without ViBo | With ViBo |
+|---|---|
+| 10 articles × 12,975 tokens | 10 × 489 tokens |
+| $0.018/query (DeepSeek) | $0.0007/query |
+| repeated: paid again | repeated: **$0** |
+
+---
+
 ## When does ViBo save you money?
 
 Honest answer: **savings come from memory work, not code work.**
