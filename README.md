@@ -1,5 +1,7 @@
 # 💰 Save 50-150× Tokens with ViBo
 
+### ⚡ Cheap token. Pay less. Same AI.
+
 **Persistent memory for AI agents — cuts token costs by 50-150× on every request.**
 
 ViBo gives AI agents and bots persistent memory: facts are saved between sessions, found by meaning, and protected by L1/L2/L3 encryption. Instead of loading ALL memory into every prompt, the agent retrieves only the relevant facts — so you pay for what you use, not for everything you know.
