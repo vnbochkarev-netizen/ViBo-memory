@@ -44,6 +44,21 @@ ViBo fixes that. It's memory that actually works:
 
 ![ViBo demo](https://github.com/vnbochkarev-netizen/ViBo-memory/raw/main/demo/vibo_demo.gif)
 
+## 📥 Get it
+
+**Try free for 2 days** — the skill comes with a built-in trial key,
+no manual activation:
+
+| Channel | How |
+|---|---|
+| 🌐 **Website** | https://wwwvibo.com → enter email → download `vibo_skill_trial.zip` (key inside) |
+| 🤖 **Telegram bot** | [@ViBomemorybot](https://t.me/ViBomemorybot) → press "🎁 Try 2 days free" |
+
+Then: unpack → `python3 check_license.py` → it works. After 2 days
+pay $5/month (Stars or USDT) — the same key extends, memory is kept.
+
+**Full license:** $5/month — one key = one machine (renewable).
+
 ---
 
 ## What you get
