@@ -1,8 +1,22 @@
-# 🧠 ViBo — Memory for AI Agents
+# 💰 Save 50-150× Tokens with ViBo
 
-**Your agent stops forgetting.**
+**Persistent memory for AI agents — cuts token costs by 50-150× on every request.**
 
-ViBo gives AI agents and bots persistent memory: facts are saved between sessions, found by meaning, and protected by three encryption tiers.
+ViBo gives AI agents and bots persistent memory: facts are saved between sessions, found by meaning, and protected by L1/L2/L3 encryption. Instead of loading ALL memory into every prompt, the agent retrieves only the relevant facts — so you pay for what you use, not for everything you know.
+
+![Python 3.11](https://img.shields.io/badge/Python-3.11-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-green) ![Stars](https://img.shields.io/github/stars/vnbochkarev-netizen/ViBo-memory)
+
+---
+
+## ⚡ The headline number
+
+| Without ViBo | With ViBo | Savings |
+|---|---|---|
+| 86,315 tokens per request (all memory) | 1-187 tokens (relevant facts) | **99.9%** |
+| 10,000 facts → 155,000 tokens | ~2,000 tokens | **50-150×** |
+| $130/month (DeepSeek, 6K req) | $2/month | **$128/month saved** |
+
+Measured on real data. Not estimated.
 
 ---
 
@@ -24,6 +38,12 @@ ViBo fixes that. It's memory that actually works:
 
 ---
 
+## 🎥 Demo
+
+![ViBo demo](https://github.com/vnbochkarev-netizen/ViBo-memory/raw/main/demo/vibo_demo.gif)
+
+---
+
 ## What you get
 
 - **Persistent memory** — your agent remembers between sessions
@@ -34,6 +54,7 @@ ViBo fixes that. It's memory that actually works:
   - **L3 (Secret)** — encrypted with your password: API keys, credentials. **Never** reaches the LLM — only a 🔒 placeholder
 - **Portable** — memory lives in one `.web` file. Backup = one copy command
 - **50+ languages** — write facts in your language, ViBo understands
+- **Works with any agent** — Hermes, OpenClaw, LangChain, or your own (see INSTALL.md)
 
 ---
 
@@ -78,7 +99,6 @@ Typical savings: **50-150× fewer tokens** (up to 2,000× on large memories). Me
 
 ---
 
-
 ## The math: it pays for itself
 
 Assumptions: 10K facts in memory, 6,000 requests/month (200/day), the agent reads all memory without ViBo. Prices per 1M input tokens.
@@ -112,7 +132,7 @@ With ViBo:    ~2,000 tokens         → $0.0003
                                     → 50-150× fewer tokens
 ```
 
-Measured on real graphs (see benchmarks above), not estimated.
+---
 
 ## CLI
 
@@ -121,7 +141,22 @@ vibo --file memory.web seed               # demo memory
 vibo --file memory.web find "query"       # semantic search
 vibo --file memory.web dream              # nightly self-analysis (TTL, dedup)
 vibo --file memory.web stats              # statistics
+vibo --file memory.web usage              # REAL savings: tokens & money saved
 ```
+
+---
+
+## Roadmap
+
+- [x] Core memory engine (L1/L2/L3 encryption, semantic search)
+- [x] .web portable format
+- [x] CLI + Python API
+- [x] LangChain adapter
+- [x] Trial system (2 days, built-in key)
+- [ ] MCP server (Model Context Protocol)
+- [ ] Desktop GUI
+- [ ] Team sharing (multi-user memory)
+- [ ] Export to JSON/Markdown
 
 ---
 
