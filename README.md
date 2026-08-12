@@ -86,8 +86,6 @@ Assumptions: 10K facts in memory, 6,000 requests/month (200/day), the agent read
 | Model | Without ViBo | With ViBo | You save | ViBo cost |
 |---|---|---|---|---|
 | DeepSeek ($0.14/M) | $130/mo | $2/mo | **$128/mo** | $5 |
-| GPT-4o ($2.50/M) | $2,325/mo | $30/mo | **$2,295/mo** | $5 |
-| Claude Opus ($15/M) | $13,950/mo | $180/mo | **$13,770/mo** | $5 |
 
 ### Honest note (measured, not marketing)
 
