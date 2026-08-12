@@ -101,6 +101,23 @@ Typical savings: **50-150× fewer tokens** (up to 2,000× on large memories). Me
 
 ---
 
+## When does ViBo save you money?
+
+Honest answer: **savings come from memory work, not code work.**
+
+| Your agent does | Savings |
+|---|---|
+| Talks to people (support, sales, assistant) | **Huge savings** — memory grows, every conversation searches it |
+| Works with big memory (10K+ facts) | **50-150×** — reads only relevant facts |
+| Writes code | **Little to no savings** — code doesn't "remember" |
+| Small memory (100 facts) | **~2×** — not much to save yet |
+
+The bigger the memory, the bigger the savings. ViBo is about **memory work**:
+chatting with clients, researching, consulting, planning — anything where
+the agent needs to *recall* what it knows.
+
+---
+
 ## The math: it pays for itself
 
 Assumptions: 10K facts in memory, 6,000 requests/month (200/day), the agent reads all memory without ViBo. Prices per 1M input tokens.
