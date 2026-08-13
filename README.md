@@ -147,6 +147,22 @@ if not cache.get(query):
 
 ---
 
+
+## 🔐 L3 Secrets Vault — the LLM never sees your secrets
+
+Every agent memory system sends context to the LLM. Not us.
+
+```
+L1 — Public:      general facts, always available
+L2 — Private:     encrypted at rest, agent-only
+L3 — Secrets:     passwords, API keys, medical data —
+                  agent knows a secret EXISTS but never receives it.
+                  The LLM physically cannot leak what it never saw.
+```
+
+No other agent memory does this — Mem0, Cognee, LangChain Memory
+all put secrets into the context window.
+
 ## When does ViBo save you money?
 
 Honest answer: **savings come from memory work, not code work.**
