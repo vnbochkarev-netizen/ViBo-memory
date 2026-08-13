@@ -211,6 +211,38 @@ vibo --file memory.web usage              # REAL savings: tokens & money saved
 
 ---
 
+
+## ☁️ ViBo Cloud API — memory for YOUR SaaS
+
+Give every user of your product persistent, encrypted memory — one API call.
+No infrastructure, no tokens burned, 97.5% savings.
+
+```bash
+# Save a fact for a user
+curl -X POST https://wwwvibo.com/memory/add \
+  -H "Content-Type: application/json" \
+  -d '{"key": "VIBO-...", "label": "user-pref", "content": "Anna prefers email"}'
+
+# Search (only relevant facts → 97.5% fewer tokens)
+curl -X POST https://wwwvibo.com/memory/search \
+  -H "Content-Type: application/json" \
+  -d '{"key": "VIBO-...", "query": "how does Anna want to be contacted?"}'
+
+# Create sub-keys for YOUR users (isolated, encrypted memory each)
+curl -X POST https://wwwvibo.com/subkey \
+  -H "Content-Type: application/json" \
+  -d '{"master_key": "VIBO-...", "user_id": "user-42"}'
+```
+
+- **Per-user memory**: one master key → up to 100 user sub-keys (Business)
+- **Encryption L1/L2/L3**: secrets never reach the LLM
+- **Token savings**: 97.5% fewer tokens per request, web articles 96-99%
+- **Zero infrastructure**: we host, integrate in 10 minutes (OpenAPI)
+- **Plans**: Starter $5 · Business $10 · Enterprise $25 per month
+- **Free trial**: 2 days, 100 facts — https://wwwvibo.com
+
+OpenAPI spec: [integrations/vibo_openapi_dify.json](integrations/vibo_openapi_dify.json)
+
 ## Roadmap
 
 - [x] Core memory engine (L1/L2/L3 encryption, semantic search)
