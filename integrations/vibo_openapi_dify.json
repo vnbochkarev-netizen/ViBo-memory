@@ -1,0 +1,117 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ViBo Memory — Dify Custom Tool",
+    "version": "1.0.0",
+    "description": "Persistent memory for Dify agents: save/recall facts across sessions (L1/L2/L3 encryption), web-search compression (99.6%), thread memory (-72%). 97.5% fewer tokens measured. Site: https://wwwvibo.com"
+  },
+  "servers": [
+    {"url": "https://wwwvibo.com"}
+  ],
+  "paths": {
+    "/memory/search": {
+      "post": {
+        "summary": "Search memory — get only relevant facts (97.5% fewer tokens)",
+        "operationId": "memorySearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key", "query"],
+                "properties": {
+                  "key": {"type": "string", "description": "ViBo license key (VIBO-...)"},
+                  "query": {"type": "string", "description": "What to find in memory"},
+                  "limit": {"type": "integer", "default": 5}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Relevant facts + measured savings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {"type": "boolean"},
+                    "facts": {"type": "array", "items": {"type": "object"}},
+                    "saved_tokens": {"type": "integer"},
+                    "saved_pct": {"type": "number"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/memory/add": {
+      "post": {
+        "summary": "Save a fact to memory",
+        "operationId": "memoryAdd",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key", "label", "content"],
+                "properties": {
+                  "key": {"type": "string"},
+                  "label": {"type": "string", "description": "Short name of the fact"},
+                  "content": {"type": "string", "description": "Fact details"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Saved"},
+          "409": {"description": "Duplicate"}
+        }
+      }
+    },
+    "/memory/thread": {
+      "post": {
+        "summary": "Thread memory: add/compress/ask about conversations",
+        "operationId": "memoryThread",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key", "action"],
+                "properties": {
+                  "key": {"type": "string"},
+                  "action": {"type": "string", "enum": ["add", "compress", "ask", "context"]},
+                  "text": {"type": "string"},
+                  "query": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Result"}
+        }
+      }
+    },
+    "/usage": {
+      "get": {
+        "summary": "Usage stats (savings)",
+        "operationId": "memoryUsage",
+        "parameters": [
+          {"name": "key", "in": "query", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Records, saved tokens, saved USD"}
+        }
+      }
+    }
+  }
+}

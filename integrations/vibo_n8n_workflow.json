@@ -1,0 +1,61 @@
+{
+  "name": "ViBo Memory — support bot remembers clients",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "When chat message received",
+      "type": "n8n-nodes-base.trigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "query": "={{ $json.message }}",
+        "key": "={{ $env.VIBO_KEY }}"
+      },
+      "id": "vibo-search",
+      "name": "ViBo Memory: Search",
+      "type": "n8n-nodes-vibo.memory",
+      "typeVersion": 1,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "operation": "add",
+        "label": "client-fact",
+        "content": "={{ $json.message }}",
+        "key": "={{ $env.VIBO_KEY }}"
+      },
+      "id": "vibo-add",
+      "name": "ViBo Memory: Save",
+      "type": "n8n-nodes-vibo.memory",
+      "typeVersion": 1,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "text": "Agent reply with memory context:\n\n{{ $json.facts }}\n\nSavings: {{ $json.saved_pct }}%"
+      },
+      "id": "respond",
+      "name": "Reply with context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 0]
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [[{"node": "ViBo Memory: Search", "type": "main", "index": 0}]]
+    },
+    "ViBo Memory: Search": {
+      "main": [[{"node": "ViBo Memory: Save", "type": "main", "index": 0}]]
+    },
+    "ViBo Memory: Save": {
+      "main": [[{"node": "Reply with context", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"}
+}
