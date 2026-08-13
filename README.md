@@ -163,6 +163,11 @@ L3 — Secrets:     passwords, API keys, medical data —
 No other agent memory does this — Mem0, Cognee, LangChain Memory
 all put secrets into the context window.
 
+**Secrets aren't just passwords.** Business strategy, trading signals,
+unpublished research, finances, medical data, legal secrets, personal
+life. Everyone has secrets. Let your agent know they exist — never
+let it see them.
+
 ## When does ViBo save you money?
 
 Honest answer: **savings come from memory work, not code work.**
