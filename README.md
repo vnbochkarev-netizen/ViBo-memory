@@ -57,3 +57,19 @@ Get it from [@ViBomemorybot](https://t.me/ViBomemorybot) or [wwwvibo.com](https:
 ---
 
 *Dust is no longer dust. Dust is memory that was waiting for its hour.*
+
+## 🚀 Projects
+
+| Project | What it is | Link |
+|---|---|---|
+| **ViBo Memory** | Persistent memory for AI agents — 50-150× fewer tokens, L1/L2/L3 encryption | [site](https://wwwvibo.com) |
+| **ViBo Archive** | Living document archive (.vibo) — 84% compression, search by meaning, answers in ms | [demo](https://wwwvibo.com/archive) |
+| **Cloud API** | Memory for your SaaS — instant, encrypted, zero infrastructure | [site](https://wwwvibo.com) |
+| **n8n node** | Verified node for n8n workflows | [npm](https://www.npmjs.com/package/n8n-nodes-vibo) |
+| **Dify plugin** | Memory tools for Dify (search, add, thread, usage) | [PR](https://github.com/langgenius/dify-plugins/pull/2886) |
+| **MCP server** | Model Context Protocol server for AI tools | [registry](https://registry.modelcontextprotocol.io) |
+| **Telegram bot** | Get the key, manage subscription, support | [@ViBomemorybot](https://t.me/ViBomemorybot) |
+
+All projects share one license, one key, one product.
+
+*Dust is no longer dust. Dust is memory that was waiting for its hour.*
