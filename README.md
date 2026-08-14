@@ -283,3 +283,9 @@ OpenAPI spec: [integrations/vibo_openapi_dify.json](integrations/vibo_openapi_di
 ViBo is a commercial product. Get a license key: [wwwvibo.com](https://wwwvibo.com)
 
 One key = one machine. The core is distributed as a compiled module.
+
+## 🔒 Security
+
+Your data is encrypted (AES-256-GCM), secrets never reach the LLM (L3),
+the file lives on your machine — we cannot read it without your key.
+[Full security overview](docs/SECURITY_EN.md) · [wwwvibo.com](https://wwwvibo.com)
