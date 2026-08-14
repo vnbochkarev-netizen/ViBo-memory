@@ -6,6 +6,9 @@
 <a href="https://t.me/ViBomemorybot"><img src="https://img.shields.io/badge/Telegram-@ViBomemorybot-blue" alt="tg"></a>
 <a href="https://wwwvibo.com/archive"><img src="https://img.shields.io/badge/Archive-live%20demo-22c55e" alt="archive"></a>
 
+
+📖 **The Living Archive: How My Agent Started Working Through ViBo** — [read the story](docs/LIVING_ARCHIVE.md)
+
 ## What it is
 
 **ViBo Memory** — persistent memory for AI agents: facts survive between sessions, found by meaning, encrypted L1/L2/L3. Agent reads only relevant facts → **50-150× fewer tokens** on large bases (measured).
