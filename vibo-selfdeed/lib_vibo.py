@@ -105,13 +105,23 @@ class MiniMemory:
         if level != "L1" or (tags and "secret" in [t.lower() for t in tags]):
             return {"ok": False, "nodes": len(self._facts), "exit": 1,
                     "raw": "⛔ DEMO mode: L2/L3 and secrets need the full ViBo (https://wwwvibo.com/download/skill)."}
-        if len(self._facts) >= self.DEMO_LIMIT:
+        used = len(self._facts)
+        if used >= self.DEMO_LIMIT:
             return {"ok": False, "nodes": self.DEMO_LIMIT, "exit": 1,
-                    "raw": f"⛔ DEMO limit reached ({self.DEMO_LIMIT} facts). Get the full ViBo — 500 facts free: {self.DEMO_URL}"}
+                    "raw": (f"⛔ DEMO limit reached ({self.DEMO_LIMIT} facts) — you liked it, time to go full.\n"
+                            f"With a subscription ($5/mo · $30/yr · $60 lifetime): unlimited memory, semantic search, "
+                            f"L1/L2/L3 encryption, 96% web savings, living archive, privacy layer.\n"
+                            f"Your facts are KEPT — enter a key and the limit is gone.\n"
+                            f"Get a key: https://wwwvibo.com/pricing or @ViBomemorybot")}
         self._facts[label[:60]] = content
         self._save()
-        return {"ok": True, "nodes": len(self._facts), "exit": 0,
-                "raw": f"✅ Added: {label[:60]} ({len(self._facts)}/{self.DEMO_LIMIT} DEMO facts) — full memory: {self.DEMO_URL}"}
+        added = len(self._facts)
+        if added >= self.DEMO_LIMIT * 0.8:
+            return {"ok": True, "nodes": added, "exit": 0,
+                    "raw": (f"✅ Added: {label[:60]} ({added}/{self.DEMO_LIMIT} DEMO facts)\n"
+                            f"⚡ {self.DEMO_LIMIT - added} facts left in DEMO — full memory (500 facts free) is one download away: {self.DEMO_URL}")}
+        return {"ok": True, "nodes": added, "exit": 0,
+                "raw": f"✅ Added: {label[:60]} ({added}/{self.DEMO_LIMIT} DEMO facts) — full memory: {self.DEMO_URL}"}
 
     def find(self, query: str, limit: int = 5) -> list[dict]:
         q = set(w.lower() for w in query.split() if len(w) > 2)
@@ -126,8 +136,13 @@ class MiniMemory:
         return out
 
     def stats(self) -> dict:
-        return {"nodes": len(self._facts), "edges": 0,
-                "raw": f"Nodes: {len(self._facts)}/{self.DEMO_LIMIT} (DEMO) — semantic search, encryption and 500 facts need the full ViBo: {self.DEMO_URL}"}
+        used = len(self._facts)
+        warn = ""
+        if used >= self.DEMO_LIMIT * 0.8:
+            warn = (f"\n⚡ {self.DEMO_LIMIT - used} facts left in DEMO — full memory (500 facts free): {self.DEMO_URL}"
+                    f"\n💰 Upgrade: $5/mo · $30/yr · $60 lifetime → https://wwwvibo.com/pricing")
+        return {"nodes": used, "edges": 0,
+                "raw": f"Nodes: {used}/{self.DEMO_LIMIT} (DEMO) — semantic search, encryption and 500 facts need the full ViBo: {self.DEMO_URL}{warn}"}
 
     def usage(self) -> dict:
         return {"ok": True, "raw": "💾 ViBo DEMO mode: no real token savings until the full ViBo is installed (https://wwwvibo.com/download/skill)."}
@@ -156,6 +171,7 @@ class ViBo:
         # not the whole os.environ — env secrets never reach subprocess.
         self.env = {k: os.environ.get(k) for k in ("PATH", "HOME", "LANG", "LC_ALL")}
         self.env["VIBO_MEM_FILE"] = os.environ.get("VIBO_MEM_FILE", "memory.web")
+        self.env["VIBO_USAGE_LOG"] = os.environ.get("VIBO_USAGE_LOG", "vibo_usage.jsonl")
         self.env = {k: v for k, v in self.env.items() if v is not None}
         if env:
             self.env.update(env)

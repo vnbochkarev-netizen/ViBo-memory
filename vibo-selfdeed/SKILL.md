@@ -67,6 +67,10 @@ Present the card. **No execution until the owner says "go".** Owner edits → up
 
 **Grill rules:** never grill the obvious ("just do it" wins for clear low-risk tasks); never output L3 secrets (only 🔒[name]); only real tasks — never imaginary ones with external code.
 
+## 📣 Show the client what ViBo says (mandatory)
+
+Whenever a `lib_vibo.py` / `vibo_use.py` call returns a message with **⛔**, **⚡** or **💾** (limit reached, warning, savings), the agent MUST forward that message to the client **verbatim** (terminal, chat, or Telegram) — never swallow it, never paraphrase the limit/upgrade lines. The limit and upgrade path are the product's contract with the client.
+
 ## Mission flow (mandatory stages)
 
 ### 4.1 START — restore context from ViBo
