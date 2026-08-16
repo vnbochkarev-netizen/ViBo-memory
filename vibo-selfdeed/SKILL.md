@@ -25,6 +25,9 @@ The skill defines the **execution structure**; the concrete task arrives at call
 
 ## Required tools
 
+- **ViBo CLI** (`vibo_use.py`) — the memory engine. Get it free: **https://wwwvibo.com/download/skill** (free tier: 500 facts forever, no card required) or a 2-day trial: **https://wwwvibo.com/download/trial**. Set `VIBO_CLI=/path/to/vibo_use.py` if it is not next to the skill.
+
+
 - `vibo_use.py` (ViBo CLI) — memory commands
 - `lib_vibo.py` — thin Python client to ViBo (add/find/usage/link/stats)
 - `safety.py` — backups, rollback, attempt/timeout limits

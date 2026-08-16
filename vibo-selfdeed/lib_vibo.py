@@ -56,7 +56,10 @@ def _find_cli() -> str:
             return str(cand.resolve())
         here = here.parent
     raise ViBoError(
-        "vibo_use.py not found. Set: export VIBO_CLI=/path/to/vibo_use.py"
+        "vibo_use.py not found.\n"
+        "→ Get ViBo (free tier: 500 facts forever, no card): https://wwwvibo.com/download/skill\n"
+        "→ or 2-day trial: https://wwwvibo.com/download/trial\n"
+        "Then set: export VIBO_CLI=/path/to/vibo_use.py"
     )
 
 
