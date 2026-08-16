@@ -32,7 +32,6 @@
 | `run_mission.sh` | mission wrapper (init/checkpoint/progress/switch/rollback/finish) |
 | `lib_vibo.py` | thin ViBo client (add/find/usage/link/stats) |
 | `safety.py` | backups, rollback, attempt/timeout limits, smart stop matrix |
-| `comment_bot.py` | optional: comment generator for YouTube/Twitter (dry-run by default) |
 | `examples/` | 3 usage examples |
 
 ## License

@@ -138,11 +138,16 @@ class ViBo:
 
     def __init__(self, cli: str | Path | None = None, env: dict | None = None):
         self.demo = False
+        explicit_cli = bool(cli) or bool(os.environ.get("VIBO_CLI"))
         try:
             self.cli = str(cli) if cli else _find_cli()
-        except ViBoError:
-            # No ViBo CLI → built-in DEMO mode (20 facts) so the client can try
-            # the convenience right away; the full engine is one download away.
+        except ViBoError as e:
+            if explicit_cli:
+                # An explicit VIBO_CLI that is invalid must fail loud — the
+                # operator expects the real memory, not a silent DEMO fallback.
+                raise
+            # No ViBo CLI at all → built-in DEMO mode (20 facts) so the client
+            # can try the convenience right away; full engine is one download.
             self.demo = True
             self.cli = ""
             self._demo = MiniMemory()
