@@ -1,6 +1,6 @@
 ---
 name: vibo-selfdeed
-description: "Use when the agent must execute a multi-step task autonomously as a mission: restore context from ViBo memory, find and fix problems with safe backups, iterate via paths A/B/C, save lessons. Telegram controls optional."
+description: "Use when the owner hands the agent a multi-step task: grill the intent first (G1-G5 plan card, owner gate), then run it as an autonomous mission — restore context from ViBo memory, find and fix problems safely, iterate via paths A/B/C, save lessons. Built-in DEMO memory (20 facts) works without the ViBo CLI."
 ---
 
 # vibo-selfdeed — Self-Improving Agent Mission Skill
@@ -34,6 +34,38 @@ The skill defines the **execution structure**; the concrete task arrives at call
 - `run_mission.sh` — mission wrapper (init/checkpoint/progress/switch/rollback/finish)
 
 ---
+
+## 🍢 GRILL pre-flight (front door)
+
+Before the mission engine runs, interrogate the intent — the owner's task gets pinned down first:
+
+### G1 GROUND — pull context from ViBo
+- `vibo find "<project/task context>"` — past decisions, past mistakes, owner rules.
+- No memory → state that you start from scratch; you WILL create the first record at G5.
+
+### G2 GRILL — batches of 3-5 clarifications
+1. **Goal** — the WHY: "what should be true when this is done?"
+2. **Risks** — what could go wrong / what is fragile.
+3. **Do NOT touch** — files, systems, secrets, zones off-limits.
+4. **Success criterion** — measurable: "how will we know it worked?"
+5. Risky task (money/prod/public/destructive) → **adversarial round**: "what did I miss? worst case?"
+
+### G3 HARDEN — the plan card (NOT code)
+```
+UNDERSTOOD:   <what the task really is, one paragraph>
+DO NOT TOUCH: <off-limits list>
+SUCCESS:      <measurable criterion>
+APPROACH:     <3-5 bullets>
+```
+
+### G4 GATE — owner confirmation
+Present the card. **No execution until the owner says "go".** Owner edits → update the card → re-present. After confirmation → `run_mission.sh init --task "<card>" --target <SUCCESS%>`.
+
+### G5 COMMIT — save to ViBo
+- `vibo add type=plan label="<task>" content="<card>"` — plan + constraints.
+- `vibo add type=lesson label="<rule>"` — owner corrections from G4 are rules now.
+
+**Grill rules:** never grill the obvious ("just do it" wins for clear low-risk tasks); never output L3 secrets (only 🔒[name]); only real tasks — never imaginary ones with external code.
 
 ## Mission flow (mandatory stages)
 
