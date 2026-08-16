@@ -1,0 +1,144 @@
+---
+name: vibo-selfdeed
+description: "Use when the agent must execute a multi-step task autonomously as a mission: restore context from ViBo memory, find and fix problems with safe backups, iterate via paths A/B/C, save lessons. Telegram controls optional."
+---
+
+# vibo-selfdeed — Self-Improving Agent Mission Skill
+
+**A task-style skill:** the agent receives ONE concrete multi-step task and executes it as an autonomous mission, using **ViBo Memory** as the brain (context, past lessons, linked facts).
+
+> The more the agent works — the more it remembers — the better it does next time.
+
+---
+
+## When to use
+
+Trigger: ONLY when the user explicitly hands the agent a multi-step task (explicit delegation). The skill never auto-triggers on similar-looking tasks, search requests, or routine edits:
+- "Find and fix errors in project X" (code)
+- "Proofread and unify documents in folder Y"
+- "Check configs for consistency"
+- "Find vulnerabilities / mismatches in specs and reports"
+
+The skill defines the **execution structure**; the concrete task arrives at call time.
+
+---
+
+## Required tools
+
+- `vibo_use.py` (ViBo CLI) — memory commands
+- `lib_vibo.py` — thin Python client to ViBo (add/find/usage/link/stats)
+- `safety.py` — backups, rollback, attempt/timeout limits
+- `run_mission.sh` — mission wrapper (init/checkpoint/progress/switch/rollback/finish)
+
+---
+
+## Mission flow (mandatory stages)
+
+### 4.1 START — restore context from ViBo
+1. `python3 lib_vibo.py find "<project/area query>"` — what is known: architecture, past decisions, past mistakes.
+2. No memory? Work from scratch — but **must** create the first record.
+3. Output: short summary "what I know about the task and the project".
+4. `./run_mission.sh checkpoint START ok "<summary>"`
+
+### 4.2 SCAN — find problems
+1. Scan the task area (code/docs/configs/texts) with available tools (read, lint, tests, run, grep).
+2. Cross-check findings against past experience from ViBo (`vibo find "<module>"`).
+3. Classify: 🔴 critical / 🟡 important / 🟢 cosmetic.
+4. Record each finding into ViBo with tags.
+5. `./run_mission.sh checkpoint SCAN ok "found N problems (X critical)"`
+
+### 4.3 PROPOSE — propose fixes (safe)
+1. Prepare a **diff / concrete fix** for each problem.
+2. **Do NOT apply immediately.** Show the owner: "found N problems, here is the fix plan".
+3. If Telegram is configured (`TELEGRAM_MISSION_TOKEN` + `TELEGRAM_MISSION_CHAT`):
+   `./run_mission.sh notify "🔍 SCAN: N problems found"` — stage updates in chat
+   `./run_mission.sh ask "Apply fixes?" "<diff summary>"` — ✅/❌ buttons, wait for the answer (0=yes, 1=no)
+4. Wait for confirmation — or auto-apply only with explicit `--auto`.
+
+### 4.4 FIX — apply fixes
+1. **Backup before every change**: `./run_mission.sh` (backup dir) or `safety.py backup(path)`; git commit if a repo.
+2. Apply only confirmed fixes.
+3. Never touch secrets (L3) or private data without explicit permission.
+4. 3 attempts per action max (owner rule); one action ≤ 10 minutes.
+
+### 4.5 ITERATE — quantum loop (key requirement!)
+**Do NOT finish after the first fix round. Do NOT lock onto one approach.**
+
+- **Compass = % success**: target % is set at mission start (e.g. 90%). After each FIX round compute current % = solved/total.
+- **Pool of paths (quantum)**: keep ≥ 3 different approaches and SWITCH between them:
+  - Path A — direct: main treatment plan (🔴 → 🟢).
+  - Path B — backup: different strategy (other module/tool/approach).
+  - Path C — creative: different angle (rewrite part, invert the problem).
+- Before each round pull memory (`vibo find`) — what was tried, which path worked, which failed → **do not step on the same rake** (dedupe rounds).
+- If a path does not raise % for 2 rounds — **switch path** (`./run_mission.sh switch B`), do not grind one.
+- Each round = only NEW action (new path/approach), not repetition.
+- Verify fixes: errors gone? new ones? regressions?
+- Loop upward toward the target %; stop by the smart matrix (5.7), not by a random number.
+
+### 4.6 LEARN — save the lesson to ViBo (after goal is reached)
+1. Record: what was broken, how it was fixed, how many iterations, which path worked, what NOT to touch, which rakes to remember.
+2. Update links (edges) between facts.
+3. This is the key differentiator: **result and the whole cycle settle in memory** and speed up the next mission.
+
+### 4.7 REPORT — final report
+1. What was found, what was fixed, **what % success** was reached, how many rounds and which paths (A/B/C).
+2. Savings (from `vibo usage`).
+3. What ViBo learned (lessons + which path worked).
+4. `./run_mission.sh finish`
+
+---
+
+## Permissions (declare what the skill needs)
+
+- **Files:** read/write ONLY inside the mission workdir (the folder the owner pointed the mission at). Backups go to `.selfdeed_backup/`.
+- **Process:** runs the ViBo CLI (`vibo_use.py` via `VIBO_CLI` — a validated `.py` path). Nothing else is executed.
+- **Network:** NONE by default. Telegram stage updates only if the owner sets `TELEGRAM_MISSION_TOKEN`/`TELEGRAM_MISSION_CHAT` — and then only the explicit `notify`/`ask`/`report` calls.
+- **Secrets:** L3 values are never read, logged, or sent anywhere.
+- **No** npm/xurl/social posting, no hidden commands. `--auto` is explicit opt-in per mission.
+
+## Safety (hard requirements)
+
+1. No file/code edits without confirmation (except explicit `--auto`). Mission scaffolding (backup dir, mission log) at `init` is expected and logged; it never modifies project files.
+2. Backup before every change (git commit / `.bak` copy).
+3. Secrets (L3): know they exist, **never read, reveal, or copy values** without explicit permission. Handle sensitive values only via masked placeholders (guard_l3 → 🔒[name]); raw values never enter memory, logs, prompts, or reports.
+4. Rollback: backup before every change; on any error the agent MUST roll back changed files (`./run_mission.sh rollback <file>`) before continuing or reporting. Rollback is explicit, not automatic.
+5. Attempt limit: 3 per action, then stop and report.
+6. Timeout: one action ≤ 10 minutes, then stop and report.
+7. Smart stop matrix (instead of a plain round limit):
+   - ✅ % reached target → STOP, mission done.
+   - 🔄 % grows every round → keep going (progress).
+   - 🔁 % stalled 2 rounds on ONE path → not stop — **switch path** (A/B/C).
+   - ⛔ % stalled 2 rounds on ALL paths → STOP, report "dead end, need new input/data".
+   - ⛔ Tokens over mission limit → STOP, save progress to ViBo, report.
+   - ⛔ Round limit (default 5, configurable) without target → STOP and report.
+   - ⛔ Regression (a fix broke working code) → rollback, record the rake in ViBo, switch path.
+   - 🎯 Explicit "done" criterion (target %) checked every round.
+
+---
+
+## Key ViBo commands
+
+| Stage | Command | Purpose |
+|---|---|---|
+| START | `vibo find "<context>"` | restore project memory |
+| START | `vibo add <label> <content>` | record context |
+| SCAN | `vibo find "<module>"` | past errors of the module |
+| LEARN | `vibo add <label> lesson...` | remember the lesson |
+| LEARN | `vibo link <a> <b> --rel related` | link facts |
+| REPORT | `vibo usage` | show savings |
+
+---
+
+## Structure
+
+```
+vibo-selfdeed/
+├── SKILL.md            # this file
+├── TASK.md             # task template (5 stages)
+├── run_mission.sh      # wrapper: init/checkpoint/progress/switch/rollback/finish
+├── lib_vibo.py         # thin ViBo client (add/find/usage/link/stats)
+├── safety.py           # backup, rollback, limits, smart stop matrix
+└── examples/           # 3 usage examples
+```
+
+**Requirements:** Python 3.11 (compatible with ViBo core `.so`); the client goes through the existing `vibo_use.py` (never duplicate the core); `run_mission.sh --auto` = auto mode with backups but no confirmations.

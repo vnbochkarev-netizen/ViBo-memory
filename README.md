@@ -28,6 +28,8 @@ vibo archive unpack archive.vibo -o ./restored
 
 - **Skill** — drop into any Python agent (Hermes, OpenClaw, LangChain).
 - **n8n** — verified node [n8n-nodes-vibo](https://github.com/vnbochkarev-netizen/n8n-nodes-vibo).
+- **vibo-selfdeed** — free autonomous mission skill: the agent restores context, finds and fixes problems safely, iterates via paths A/B/C and saves lessons back into ViBo memory. [Learn more →](vibo-selfdeed/README.md) · `npm install vibo-selfdeed` · [ClawHub](https://clawhub.ai/@vnbochkarev-netizen/vibo-selfdeed)
+
 - **Dify** — plugin (PR in review).
 - **Cloud API** — memory for your SaaS.
 
