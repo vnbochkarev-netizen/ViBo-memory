@@ -72,11 +72,80 @@ def _find_python() -> str:
     return sys.executable
 
 
+class MiniMemory:
+    """Built-in DEMO memory (no ViBo CLI required).
+
+    Lets the client feel the convenience right after installing the skill:
+    facts are saved and found by words, up to DEMO_LIMIT facts. No semantic
+    embeddings, no encryption, no L3 — the full engine needs the ViBo package.
+    """
+
+    DEMO_LIMIT = 20
+    DEMO_URL = "https://wwwvibo.com/download/skill"
+
+    def __init__(self, path: str | Path | None = None):
+        self.path = Path(path) if path else Path(__file__).resolve().parent / "demo_memory.json"
+        self._facts: dict[str, str] = {}
+        self._load()
+
+    def _load(self) -> None:
+        try:
+            if self.path.exists():
+                self._facts = json.loads(self.path.read_text(encoding="utf-8"))
+        except Exception:
+            self._facts = {}
+
+    def _save(self) -> None:
+        try:
+            self.path.write_text(json.dumps(self._facts, ensure_ascii=False, indent=1), encoding="utf-8")
+        except Exception:
+            pass
+
+    def add(self, label: str, content: str = "", level: str = "L1", tags: list[str] | None = None) -> dict:
+        if level != "L1" or (tags and "secret" in [t.lower() for t in tags]):
+            return {"ok": False, "nodes": len(self._facts), "exit": 1,
+                    "raw": "⛔ DEMO mode: L2/L3 and secrets need the full ViBo (https://wwwvibo.com/download/skill)."}
+        if len(self._facts) >= self.DEMO_LIMIT:
+            return {"ok": False, "nodes": self.DEMO_LIMIT, "exit": 1,
+                    "raw": f"⛔ DEMO limit reached ({self.DEMO_LIMIT} facts). Get the full ViBo — 500 facts free: {self.DEMO_URL}"}
+        self._facts[label[:60]] = content
+        self._save()
+        return {"ok": True, "nodes": len(self._facts), "exit": 0,
+                "raw": f"✅ Added: {label[:60]} ({len(self._facts)}/{self.DEMO_LIMIT} DEMO facts) — full memory: {self.DEMO_URL}"}
+
+    def find(self, query: str, limit: int = 5) -> list[dict]:
+        q = set(w.lower() for w in query.split() if len(w) > 2)
+        scored = []
+        for label, content in self._facts.items():
+            text = f"{label} {content}".lower()
+            score = sum(1 for w in q if w in text)
+            if score > 0:
+                scored.append((score, label, content))
+        scored.sort(key=lambda x: -x[0])
+        out = [{"label": l, "content": c, "level": "L1"} for _, l, c in scored[:limit]]
+        return out
+
+    def stats(self) -> dict:
+        return {"nodes": len(self._facts), "edges": 0,
+                "raw": f"Nodes: {len(self._facts)}/{self.DEMO_LIMIT} (DEMO) — semantic search, encryption and 500 facts need the full ViBo: {self.DEMO_URL}"}
+
+    def usage(self) -> dict:
+        return {"ok": True, "raw": "💾 ViBo DEMO mode: no real token savings until the full ViBo is installed (https://wwwvibo.com/download/skill)."}
+
+
 class ViBo:
     """Thin wrapper over vibo_use.py (subprocess, no core import)."""
 
     def __init__(self, cli: str | Path | None = None, env: dict | None = None):
-        self.cli = str(cli) if cli else _find_cli()
+        self.demo = False
+        try:
+            self.cli = str(cli) if cli else _find_cli()
+        except ViBoError:
+            # No ViBo CLI → built-in DEMO mode (20 facts) so the client can try
+            # the convenience right away; the full engine is one download away.
+            self.demo = True
+            self.cli = ""
+            self._demo = MiniMemory()
         self.python = _find_python()
         # Pass ONLY a safe minimum (whitelist) to the child process,
         # not the whole os.environ — env secrets never reach subprocess.
@@ -102,6 +171,8 @@ class ViBo:
 
     def add(self, label: str, content: str = "", level: str = "L1", tags: list[str] | None = None) -> dict:
         """Save a fact. level: L1/L2/L3. Returns {'ok': bool, 'nodes': int, 'raw': str}."""
+        if self.demo:
+            return self._demo.add(label, content, level, tags)
         args = ["add", label[:60]]
         if content:
             args += [content]
@@ -117,8 +188,10 @@ class ViBo:
 
     def find(self, query: str, limit: int = 5) -> list[dict]:
         """Semantic search. Real CLI format:
-        "• [L1] label: content"  →  {'label': ..., 'content': ..., 'level': 'L1'}.
+        In DEMO mode: simple word match.
         """
+        if self.demo:
+            return self._demo.find(query, limit)
         r = self._run(["find", query, "--limit", str(limit)])
         facts: list[dict] = []
         line_re = re.compile(r"^\s*[•\-*]\s*\[([A-Z0-9]+)\]\s*([^:]+):\s?(.*)$")
@@ -134,6 +207,8 @@ class ViBo:
 
     def usage(self) -> dict:
         """Real savings. Returns {'ok': bool, 'raw': str}."""
+        if self.demo:
+            return self._demo.usage()
         r = self._run(["usage"])
         return {"ok": r.returncode == 0, "raw": (r.stdout or "").strip()}
 
@@ -144,6 +219,8 @@ class ViBo:
 
     def stats(self) -> dict:
         """Memory stats."""
+        if self.demo:
+            return self._demo.stats()
         r = self._run(["stats"])
         raw = (r.stdout or "").strip()
         m = re.search(r"Nodes:\s*(\d+)/(\d+)", raw) or re.search(r"Nodes:\s*(\d+)", raw)
