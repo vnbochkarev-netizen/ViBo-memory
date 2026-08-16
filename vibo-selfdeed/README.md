@@ -1,6 +1,6 @@
 # vibo-selfdeed
 
-**One product, two stages: GRILL (front door) + MISSION (engine) — powered by [ViBo Memory](https://wwwvibo.com).** Built-in DEMO memory (20 facts) works right after install, no ViBo CLI required — feel the convenience, then upgrade.
+**One product, two stages: GRILL (front door) + MISSION (engine) — powered by [ViBo Memory](https://wwwvibo.com).** Built-in DEMO memory (100 facts) works right after install, no ViBo CLI required — feel the convenience, then upgrade.
 
 The agent receives ONE concrete multi-step task and executes it as an autonomous mission: restore context from ViBo memory → scan for problems → propose fixes (safe, with confirmation) → apply with backups → iterate via paths A/B/C → **save the lesson back into ViBo** → report with numbers.
 
@@ -37,7 +37,7 @@ Optional Telegram controls: `notify` (stage updates), `ask` (✅/❌ buttons), `
 
 ## Try it immediately (DEMO mode)
 
-No ViBo CLI installed? The skill still works with a built-in DEMO memory (20 facts, word search):
+No ViBo CLI installed? The skill still works with a built-in DEMO memory (100 facts, word search):
 `vibo find "context"` · `vibo add "fact" "value"` — and every command shows where to get the full engine:
 **free tier: 500 facts forever** · 2-day trial: https://wwwvibo.com/download/trial.
 

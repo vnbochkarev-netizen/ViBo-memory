@@ -80,7 +80,7 @@ class MiniMemory:
     embeddings, no encryption, no L3 — the full engine needs the ViBo package.
     """
 
-    DEMO_LIMIT = 20
+    DEMO_LIMIT = 100
     DEMO_URL = "https://wwwvibo.com/download/skill"
 
     def __init__(self, path: str | Path | None = None):
@@ -146,7 +146,7 @@ class ViBo:
                 # An explicit VIBO_CLI that is invalid must fail loud — the
                 # operator expects the real memory, not a silent DEMO fallback.
                 raise
-            # No ViBo CLI at all → built-in DEMO mode (20 facts) so the client
+            # No ViBo CLI at all → built-in DEMO mode (100 facts) so the client
             # can try the convenience right away; full engine is one download.
             self.demo = True
             self.cli = ""

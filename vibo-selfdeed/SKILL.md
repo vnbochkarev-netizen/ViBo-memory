@@ -1,6 +1,6 @@
 ---
 name: vibo-selfdeed
-description: "Use when the owner hands the agent a multi-step task: grill the intent first (G1-G5 plan card, owner gate), then run it as an autonomous mission — restore context from ViBo memory, find and fix problems safely, iterate via paths A/B/C, save lessons. Built-in DEMO memory (20 facts) works without the ViBo CLI."
+description: "Use when the owner hands the agent a multi-step task: grill the intent first (G1-G5 plan card, owner gate), then run it as an autonomous mission — restore context from ViBo memory, find and fix problems safely, iterate via paths A/B/C, save lessons. Built-in DEMO memory (100 facts) works without the ViBo CLI."
 ---
 
 # vibo-selfdeed — Self-Improving Agent Mission Skill
