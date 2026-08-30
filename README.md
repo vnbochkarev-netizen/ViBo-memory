@@ -1,5 +1,7 @@
 # 💰 ViBo — Memory for AI Agents + Living Document Archive
 
+[![SkillQA](https://img.shields.io/badge/SkillQA-A-brightgreen)](https://github.com/vnbochkarev-netizen/ViBo-SkillQA)
+
 **One license. One key. Your agent remembers — and your documents think.**
 
 <a href="https://wwwvibo.com"><img src="https://img.shields.io/badge/website-wwwvibo.com-22c55e" alt="site"></a>
