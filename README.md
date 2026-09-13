@@ -80,3 +80,15 @@ Get it from [@ViBomemorybot](https://t.me/ViBomemorybot) or [wwwvibo.com](https:
 All projects share one license, one key, one product.
 
 *Dust is no longer dust. Dust is memory that was waiting for its hour.*
+
+---
+
+## Related projects
+
+* [**CloudArc**](https://github.com/vnbochkarev-netizen/cloudarc) — pack a 10 GiB folder into one
+  `.vibo` archive at a flat ~26 MiB peak RSS, and read its index over HTTP without fetching the
+  payload (Apache-2.0). [Docs site](https://vnbochkarev-netizen.github.io/cloudarc/)
+* [**memory-shield**](https://github.com/vnbochkarev-netizen/memory-shield) — poisoning defense for
+  agent memory (MIT).
+* [**ViBo-memory**](https://github.com/vnbochkarev-netizen/ViBo-memory) — persistent agent memory
+  with L1/L2/L3 encryption.
