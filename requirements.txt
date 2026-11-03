@@ -1,0 +1,12 @@
+# ViBo skill runtime dependencies (Python 3.11 required — the core is compiled
+# for CPython 3.11 and will refuse to import on 3.10 / 3.12+).
+#
+# usearch is pinned on purpose: 2.26.x breaks the compiled vector_index — the
+# second `vibo_use.py add` dies with SIGSEGV (core dumped) after writing the
+# fact but before the index. 2.15.0 is the version the release was built and
+# tested against.
+cryptography>=42.0
+fastembed>=0.5.1
+pymorphy3>=1.1
+numpy>=1.24
+usearch==2.15.0
