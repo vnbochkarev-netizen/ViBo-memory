@@ -35,6 +35,22 @@ vibo archive unpack archive.vibo -o ./restored
 - **Dify** — plugin (PR in review).
 - **Cloud API** — memory for your SaaS.
 
+## Install requirements
+
+- **Python 3.11 exactly.** The core ships as compiled modules for CPython 3.11;
+  3.10 / 3.12+ refuse to import.
+- **Install dependencies from `requirements.txt` in this repo, not by hand.**
+  `usearch` is pinned to `2.15.0` — newer builds crash the compiled index on the
+  second `add`.
+- **Check the host before trusting it:** `python3.11 tools/preflight.py <package-dir>`
+  tells you what actually works (memory core, index, add-ons).
+- **Ubuntu 22.04 / Debian 12 (glibc < 2.38):** memory works, but the Living
+  Archive, license check and memory-tools modules do not load. Matrix and
+  workarounds: [docs/INSTALL_UBUNTU_22_04.md](docs/INSTALL_UBUNTU_22_04.md).
+- **CI:** `.github/workflows/smoke.yml` installs the released package, runs
+  `add → find → reindex` and fails if a fact is not found — the regression that
+  made 2.1.2 look empty on a clean machine.
+
 ## What it is for
 
 - **Banks** — "What did we promise this client?" → milliseconds. Secrets stay encrypted (L3).

@@ -1,0 +1,68 @@
+name: smoke
+
+# Catches the install-time regressions that shipped in 2.1.2:
+#   * a second `add` segfaulting (usearch 2.26 + compiled vector_index),
+#   * the .vec sidecar never being written (float32 not JSON serializable),
+#   * `find` answering «Memory is small» on a healthy base.
+#
+# The test runs the *released* package (the compiled core lives only in release
+# assets) overlaid with this branch's CLI and requirements — i.e. exactly what a
+# customer gets after the fix.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: install smoke (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            expect_archive: ok
+          # archive/license/.vibo-memory-tools are compiled against glibc 2.38;
+          # on 22.04 they must fail loudly and memory must still work.
+          # See docs/INSTALL_UBUNTU_22_04.md
+          - os: ubuntu-22.04
+            expect_archive: fail
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download the released package (compiled core)
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest"
+          url=$(curl -fsSL "$api" | python -c "import json,sys; d=json.load(sys.stdin); print(next(a['browser_download_url'] for a in d['assets'] if a['name'].endswith('.zip')))")
+          echo "package: $url"
+          curl -fsSL "$url" -o release.zip
+          mkdir -p build
+          python -m zipfile -e release.zip build/
+          python -c "print(open('build/VERSION').read().strip())" || true
+
+      - name: Overlay this branch's CLI and requirements
+        run: |
+          cp vibo_use.py vibo_json_shim.py build/
+          cp requirements.txt build/requirements.txt
+
+      - name: Install pinned dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install -q --upgrade pip
+          .venv/bin/pip install -q -r requirements.txt
+
+      - name: Preflight
+        run: .venv/bin/python tools/preflight.py build
+
+      - name: Smoke test
+        env:
+          EXPECT_ARCHIVE: ${{ matrix.expect_archive }}
+        run: .venv/bin/python tests/smoke.py build --expect-archive "$EXPECT_ARCHIVE"
