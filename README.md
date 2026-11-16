@@ -45,7 +45,7 @@ vibo archive unpack archive.vibo -o ./restored
 - **Check the host before trusting it:** `python3.11 tools/preflight.py` prints
   OS, architecture, libc, Python ABI, the GLIBC requirement of every shipped
   module, and runs a smoke test (write, read, delete, archive, backups, key).
-- **Archive and maintenance are pure Python since 2.1.2.** The binary modules
+- **Archive and maintenance are pure Python since 2.2.0.** The binary modules
   `vibo_archive` and `vibo_memory_tools` are not shipped and not used: they
   required GLIBC 2.38, and `vibo_memory_tools` rewrote the base with a different
   key and made stored facts unreadable. Nothing is lost by removing them —

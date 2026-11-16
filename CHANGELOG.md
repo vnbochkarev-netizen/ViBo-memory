@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.2 — 2026-11-16
+## 2.2.0 — 2026-11-16
 
 ### Changed
 - Archive and maintenance now run on pure Python implementations. The binary
