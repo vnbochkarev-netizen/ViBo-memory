@@ -6,7 +6,7 @@
 
 <a href="https://wwwvibo.com"><img src="https://img.shields.io/badge/website-wwwvibo.com-22c55e" alt="site"></a>
 <a href="https://t.me/ViBomemorybot"><img src="https://img.shields.io/badge/Telegram-@ViBomemorybot-blue" alt="tg"></a>
-<a href="https://wwwvibo.com/archive"><img src="https://img.shields.io/badge/Archive-live%20demo-22c55e" alt="archive"></a>
+<a href="https://wwwvibo.com/setup/"><img src="https://img.shields.io/badge/Archive-live%20demo-22c55e" alt="archive"></a>
 
 
 📖 **The Living Archive: How My Agent Started Working Through ViBo** — [read the story](docs/LIVING_ARCHIVE.md)
@@ -38,18 +38,22 @@ vibo archive unpack archive.vibo -o ./restored
 ## Install requirements
 
 - **Python 3.11 exactly.** The core ships as compiled modules for CPython 3.11;
-  3.10 / 3.12+ refuse to import.
-- **Install dependencies from `requirements.txt` in this repo, not by hand.**
-  `usearch` is pinned to `2.15.0` — newer builds crash the compiled index on the
-  second `add`.
-- **Check the host before trusting it:** `python3.11 tools/preflight.py <package-dir>`
-  tells you what actually works (memory core, index, add-ons).
-- **Ubuntu 22.04 / Debian 12 (glibc < 2.38):** memory works, but the Living
-  Archive, license check and memory-tools modules do not load. Matrix and
-  workarounds: [docs/INSTALL_UBUNTU_22_04.md](docs/INSTALL_UBUNTU_22_04.md).
+  3.10 / 3.12+ refuse to import. Tested matrix with results:
+  [wwwvibo.com/setup](https://wwwvibo.com/setup#env).
+- **Install dependencies from `requirements.txt`, not by hand.** `usearch` is
+  pinned to `>=2.15,<2.26` — 2.26 crashes the compiled index on the first write.
+- **Check the host before trusting it:** `python3.11 tools/preflight.py` prints
+  OS, architecture, libc, Python ABI, the GLIBC requirement of every shipped
+  module, and runs a smoke test (write, read, delete, archive, backups, key).
+- **Archive and maintenance are pure Python since 2.1.2.** The binary modules
+  `vibo_archive` and `vibo_memory_tools` are not shipped and not used: they
+  required GLIBC 2.38, and `vibo_memory_tools` rewrote the base with a different
+  key and made stored facts unreadable. Nothing is lost by removing them —
+  `vibo archive` and `vibo maint` cover the same ground.
+- **Linux x86_64 with glibc 2.35+** is what we actually test (Ubuntu 22.04,
+  Debian 12). macOS, Windows and musl/Alpine are not tested.
 - **CI:** `.github/workflows/smoke.yml` installs the released package, runs
-  `add → find → reindex` and fails if a fact is not found — the regression that
-  made 2.1.2 look empty on a clean machine.
+  `add → find → reindex` and fails if a fact is not found.
 
 ## What it is for
 
@@ -73,7 +77,7 @@ Web search: 96-99%. Threads: -72%. Archive: 84%, 0.1s. **Empty memory = 0 saving
 
 ## Pricing
 
-One license, $5/month (first 100 users keep **$2.5 forever**). Cloud API $5/10/25. 2-day free trial.
+One license, $5/month (first 100 users keep **$2.5 forever**). Cloud API $5/10/25. 14-day free trial.
 
 Get it from [@ViBomemorybot](https://t.me/ViBomemorybot) or [wwwvibo.com](https://wwwvibo.com).
 
