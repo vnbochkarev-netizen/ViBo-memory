@@ -17,6 +17,15 @@
 
 **ViBo Archive** — a living document archive in our own `.vibo` format: compressed (~84%), searched by meaning, answers questions in milliseconds. LLM reads 22 KB instead of 146 KB.
 
+## Install
+
+```bash
+pip install vibo-memory      # CPython 3.11, Linux x86_64 (manylinux)
+vibo-cli doctor
+```
+
+Package on PyPI: [vibo-memory](https://pypi.org/project/vibo-memory/) · command: `vibo-cli`.
+
 ## How to use
 
 ```bash
