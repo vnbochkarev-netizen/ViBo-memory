@@ -20,7 +20,7 @@
 ## Install
 
 ```bash
-pip install vibo-memory      # CPython 3.11, Linux x86_64 (manylinux)
+pip install vibo-memory      # 2.2.1 · CPython 3.11 · Linux x86_64 (manylinux)
 vibo-cli doctor
 ```
 
